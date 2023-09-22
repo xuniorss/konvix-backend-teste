@@ -18,12 +18,13 @@
 |
 */
 
-import Route from "@ioc:Adonis/Core/Route";
+import Route from '@ioc:Adonis/Core/Route'
 
-Route.get("/", async () => {
-   return { hello: "world" };
-});
+Route.get('/', async () => {
+   return { hello: 'world' }
+})
 
-Route.post("/create-account", "UsuariosController.store");
+Route.post('/create-account', 'UsuariosController.store')
+Route.post('/create-session', 'SessionsController.store')
 
-Route.group(() => {}).middleware("auth");
+Route.group(() => {}).middleware('auth')
