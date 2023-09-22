@@ -24,6 +24,6 @@ Route.get("/", async () => {
    return { hello: "world" };
 });
 
-Route.group(() => {
-   Route.get("/list-users", "UsuariosController.index");
-}).middleware("auth");
+Route.post("/create-account", "UsuariosController.store");
+
+Route.group(() => {}).middleware("auth");
