@@ -27,4 +27,6 @@ Route.get('/', async () => {
 Route.post('/create-account', 'UsuariosController.store')
 Route.post('/create-session', 'SessionsController.store')
 
-Route.group(() => {}).middleware('auth')
+Route.group(() => {
+   Route.delete('/destroy-session', 'SessionsController.destroy')
+}).middleware('auth')
