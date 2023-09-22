@@ -5,9 +5,8 @@
  * file.
  */
 
-import Application from "@ioc:Adonis/Core/Application";
-import Env from "@ioc:Adonis/Core/Env";
-import type { DatabaseConfig } from "@ioc:Adonis/Lucid/Database";
+import Env from '@ioc:Adonis/Core/Env'
+import type { DatabaseConfig } from '@ioc:Adonis/Lucid/Database'
 
 const databaseConfig: DatabaseConfig = {
    /*
@@ -20,7 +19,7 @@ const databaseConfig: DatabaseConfig = {
   | file.
   |
   */
-   connection: Env.get("DB_CONNECTION"),
+   connection: Env.get('DB_CONNECTION'),
 
    connections: {
       /*
@@ -35,13 +34,13 @@ const databaseConfig: DatabaseConfig = {
     |
     */
       sqlite: {
-         client: "sqlite",
+         client: 'sqlite',
          connection: {
-            filename: Application.tmpPath("db-teste.db"),
+            filename: Env.get('DB_PATH'),
          },
          pool: {
             afterCreate: (conn, cb) => {
-               conn.run("PRAGMA foreign_keys=true", cb);
+               conn.run('PRAGMA foreign_keys=true', cb)
             },
          },
          migrations: {
@@ -52,6 +51,6 @@ const databaseConfig: DatabaseConfig = {
          debug: false,
       },
    },
-};
+}
 
-export default databaseConfig;
+export default databaseConfig
