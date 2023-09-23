@@ -29,4 +29,5 @@ Route.post('/create-session', 'SessionsController.store')
 
 Route.group(() => {
    Route.delete('/destroy-session', 'SessionsController.destroy')
+   Route.post('/create-customer', 'ClientesController.store')
 }).middleware('auth')
