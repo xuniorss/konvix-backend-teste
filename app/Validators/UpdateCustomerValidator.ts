@@ -25,7 +25,7 @@ export default class UpdateCustomerValidator {
     */
    public schema = schema.create({
       des_nome: schema.string.optional({}, [rules.minLength(1)]),
-      flg_inativo: schema.number.optional(),
+      flg_inativo: schema.boolean.optional(),
       des_endereco: schema.string.optional({}, [rules.minLength(1)]),
       num_endereco: schema.string.nullableAndOptional({}),
       des_cidade: schema.string.optional({}, [rules.minLength(1)]),

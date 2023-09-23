@@ -68,7 +68,7 @@ export default class ClientesController {
 
       const data: Partial<Cliente> = {
          desNome: customerPayload.des_nome,
-         flgInativo: customerPayload.flg_inativo,
+         flgInativo: customerPayload.flg_inativo ? 1 : 0,
          desEndereco: customerPayload.des_endereco,
          numEndereco: customerPayload.num_endereco,
          desCidade: customerPayload.des_cidade,
