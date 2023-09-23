@@ -75,6 +75,22 @@ export default class ClientesController {
       return response.ok({ customer: updatedCustomer })
    }
 
+   public async destroy({ request, response, auth }: HttpContextContract) {
+      const user = this.authenticatedUser(auth.user!.codUsuario)
+      if (!user) throw new BadRequestException('Usuário não encontrado', 404)
+
+      const codCliente = request.param('id')
+
+      const customer = await Cliente.find(codCliente)
+
+      if (!customer)
+         throw new BadRequestException('Cliente não encontrado', 404)
+
+      await customer.delete()
+
+      return response.ok({})
+   }
+
    private authenticatedUser(userId: number) {
       return Usuario.query()
          .where('cod_usuario', userId)
