@@ -38,13 +38,16 @@ export default class ClientesController {
       return response.created({})
    }
 
-   public async index({ response, auth }: HttpContextContract) {
+   public async index({ request, response, auth }: HttpContextContract) {
       const user = this.authenticatedUser(auth.user!.codUsuario)
       if (!user) throw new BadRequestException('Usuário não encontrado', 404)
 
-      const customers = await Cliente.all()
+      const page = request.input('page', 1)
+      const perPage = 1
 
-      return response.ok({ customers, length: customers.length })
+      const customers = await Cliente.query().paginate(page, perPage)
+
+      return response.ok({ customers })
    }
 
    public async update({ request, response, auth }: HttpContextContract) {
