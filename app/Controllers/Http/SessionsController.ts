@@ -45,9 +45,4 @@ export default class SessionsController {
       await auth.logout()
       return response.ok({})
    }
-
-   public async index({ response, auth }: HttpContextContract) {
-      const userAuth = await Usuario.find(auth.user!.codUsuario)
-      return response.ok({ user: userAuth })
-   }
 }

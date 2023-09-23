@@ -29,5 +29,4 @@ Route.post('/create-session', 'SessionsController.store')
 
 Route.group(() => {
    Route.delete('/destroy-session', 'SessionsController.destroy')
-   Route.get('/me', 'SessionsController.index')
 }).middleware('auth')

@@ -14,11 +14,11 @@ export default class UsuariosController {
 
       if (userByEmail) throw new BadRequestException('E-mail já em uso.', 409)
 
-      const user = await Usuario.create({
+      await Usuario.create({
          desEmail: userPayload.des_email,
          password: userPayload.des_senha,
       })
 
-      return response.created({ user })
+      return response.created({})
    }
 }
