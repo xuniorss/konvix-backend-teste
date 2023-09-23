@@ -3,6 +3,7 @@ import BadRequestException from 'App/Exceptions/BadRequestException'
 import Cliente from 'App/Models/Cliente'
 import Usuario from 'App/Models/Usuario'
 import CreateCustomerValidator from 'App/Validators/CreateCustomerValidator'
+import UpdateCustomerValidator from 'App/Validators/UpdateCustomerValidator'
 import { DateTime } from 'luxon'
 
 export default class ClientesController {
@@ -44,6 +45,34 @@ export default class ClientesController {
       const customers = await Cliente.all()
 
       return response.ok({ customers, length: customers.length })
+   }
+
+   public async update({ request, response, auth }: HttpContextContract) {
+      const user = this.authenticatedUser(auth.user!.codUsuario)
+      if (!user) throw new BadRequestException('Usuário não encontrado', 404)
+
+      const customerPayload = await request.validate(UpdateCustomerValidator)
+      const codCliente = request.param('id')
+
+      const customer = await Cliente.find(codCliente)
+
+      if (!customer)
+         throw new BadRequestException('Cliente não encontrado', 404)
+
+      const data: Partial<Cliente> = {
+         desNome: customerPayload.des_nome,
+         flgInativo: customerPayload.flg_inativo,
+         desEndereco: customerPayload.des_endereco,
+         numEndereco: customerPayload.num_endereco,
+         desCidade: customerPayload.des_cidade,
+         desUf: customerPayload.des_uf,
+         desTelefone: customerPayload.des_telefone,
+         desContato: customerPayload.des_contato,
+      }
+
+      const updatedCustomer = await customer.merge({ ...data }).save()
+
+      return response.ok({ customer: updatedCustomer })
    }
 
    private authenticatedUser(userId: number) {
