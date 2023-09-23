@@ -27,7 +27,9 @@ export default class ClientesController {
       await Cliente.create({
          desNome: customerPayload.des_nome,
          desEndereco: customerPayload.des_endereco,
-         numEndereco: customerPayload.num_endereco,
+         numEndereco: customerPayload.num_endereco
+            ? customerPayload.num_endereco
+            : 'S/N',
          desCidade: customerPayload.des_cidade,
          desUf: customerPayload.des_uf,
          desTelefone: customerPayload.des_telefone,
@@ -43,9 +45,11 @@ export default class ClientesController {
       if (!user) throw new BadRequestException('Usuário não encontrado', 404)
 
       const page = request.input('page', 1)
-      const perPage = 1
+      const perPage = 10
 
-      const customers = await Cliente.query().paginate(page, perPage)
+      const customers = await Cliente.query()
+         .orderBy('cod_cliente', 'asc')
+         .paginate(page, perPage)
 
       return response.ok({ customers })
    }

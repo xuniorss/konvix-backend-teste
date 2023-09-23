@@ -26,7 +26,7 @@ export default class CreateCustomerValidator {
    public schema = schema.create({
       des_nome: schema.string({}, [rules.minLength(1)]),
       des_endereco: schema.string({}, [rules.minLength(1)]),
-      num_endereco: schema.string.nullable({}),
+      num_endereco: schema.string.nullableAndOptional({}),
       des_cidade: schema.string({}, [rules.minLength(1)]),
       des_uf: schema.string({}, [rules.maxLength(2)]),
       des_telefone: schema.string({}, [rules.minLength(1)]),
