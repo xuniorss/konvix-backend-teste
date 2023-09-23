@@ -1,5 +1,7 @@
-import { BaseModel, column } from '@ioc:Adonis/Lucid/Orm'
+import { BaseModel, column, hasMany, HasMany } from '@ioc:Adonis/Lucid/Orm'
 import { DateTime } from 'luxon'
+
+import Venda from './Venda'
 
 export default class Cliente extends BaseModel {
    @column({ isPrimary: true, columnName: 'cod_cliente' })
@@ -47,6 +49,9 @@ export default class Cliente extends BaseModel {
       columnName: 'dta_alteracao',
    })
    public updatedAt: DateTime
+
+   @hasMany(() => Venda, { foreignKey: 'codCliente' })
+   public vendas: HasMany<typeof Venda>
 
    public static table = 'cliente'
 }
