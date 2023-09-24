@@ -38,4 +38,7 @@ Route.group(() => {
 
    Route.post('/create-coupon', 'VendasController.store')
    Route.delete('/destroy-coupon/:saleId', 'VendasController.destroy')
+
+   Route.post('/add-item', 'VendaItensController.store')
+   Route.post('/end-sale/:customerId', 'VendaItensController.endSale')
 }).middleware('auth')
