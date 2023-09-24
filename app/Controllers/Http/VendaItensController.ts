@@ -117,6 +117,29 @@ export default class VendaItensController {
       return response.ok({})
    }
 
+   public async destroyByItem({
+      request,
+      response,
+      auth,
+   }: HttpContextContract) {
+      const user = this.authenticatedUser(auth.user!.codUsuario)
+      if (!user) throw new BadRequestException('Usuário não encontrado', 404)
+
+      const codVenda = request.param('saleId')
+      const itemId = request.param('itemId')
+
+      const item = await VendaItem.query()
+         .where('cod_venda', codVenda)
+         .andWhere('cod_item', itemId)
+         .first()
+
+      if (!item) throw new BadRequestException('Item não encontrado', 404)
+
+      await item.delete()
+
+      return response.ok({})
+   }
+
    private authenticatedUser(userId: number) {
       return Usuario.query()
          .where('cod_usuario', userId)

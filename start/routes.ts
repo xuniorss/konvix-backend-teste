@@ -45,4 +45,8 @@ Route.group(() => {
       'VendaItensController.indexSaleItem'
    )
    Route.post('/end-sale/:customerId', 'VendaItensController.storeEndSale')
+   Route.delete(
+      '/destroy-item/:saleId/:itemId',
+      'VendaItensController.destroyByItem'
+   )
 }).middleware('auth')
