@@ -25,7 +25,7 @@ export default class CreateCouponValidator {
     *    ```
     */
    public schema = schema.create({
-      cod_cliente: schema.number(),
+      cod_cliente: schema.string({}),
       dta_venda: schema.date(),
    })
 

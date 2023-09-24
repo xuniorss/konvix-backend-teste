@@ -12,18 +12,18 @@ export default class VendasController {
       const user = await this.authenticatedUser(auth.user!.codUsuario)
       if (!user) throw new BadRequestException('Usuário não encontrado', 404)
 
-      const customer = this.customerActive(couponPayload.cod_cliente)
+      const customer = this.customerActive(parseInt(couponPayload.cod_cliente))
 
       if (!customer)
          throw new BadRequestException('Cliente não encontrado', 404)
 
       const sale = await Venda.create({
-         codCliente: couponPayload.cod_cliente,
+         codCliente: parseInt(couponPayload.cod_cliente),
          dtaVenda: couponPayload.dta_venda,
          valTotalVenda: 0,
       })
 
-      return response.created({ sale })
+      return response.created(sale)
    }
 
    public async destroy({ request, response, auth }: HttpContextContract) {

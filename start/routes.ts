@@ -32,6 +32,7 @@ Route.group(() => {
 
    Route.post('/create-customer', 'ClientesController.store')
    Route.get('/customers', 'ClientesController.index')
+   Route.get('/customers/all', 'ClientesController.indexAll')
    Route.put('/customer/:id', 'ClientesController.update')
    Route.delete('/customer/:id', 'ClientesController.destroy')
 

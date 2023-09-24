@@ -54,6 +54,15 @@ export default class ClientesController {
       return response.ok({ customers })
    }
 
+   public async indexAll({ response, auth }: HttpContextContract) {
+      const user = this.authenticatedUser(auth.user!.codUsuario)
+      if (!user) throw new BadRequestException('Usuário não encontrado', 404)
+
+      const customers = await Cliente.query().orderBy('des_nome', 'asc')
+
+      return response.ok(customers)
+   }
+
    public async update({ request, response, auth }: HttpContextContract) {
       const user = this.authenticatedUser(auth.user!.codUsuario)
       if (!user) throw new BadRequestException('Usuário não encontrado', 404)
