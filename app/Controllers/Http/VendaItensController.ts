@@ -10,6 +10,8 @@ export default class VendaItensController {
    public async store({ request, response, auth }: HttpContextContract) {
       const itemPayload = await request.validate(CreateVendaItemValidator)
 
+      const codVenda = request.param('saleId')
+
       const qtdItens = parseInt(itemPayload.qtd_itens)
       const valUnitario = parseFloat(itemPayload.val_unitario.replace(',', '.'))
 
@@ -28,7 +30,7 @@ export default class VendaItensController {
             400
          )
 
-      const openedSale = await Venda.find(itemPayload.cod_venda)
+      const openedSale = await Venda.find(codVenda)
 
       if (!openedSale)
          throw new BadRequestException('Venda não encontrada', 404)
@@ -36,7 +38,7 @@ export default class VendaItensController {
       const valTotalItem = qtdItens * valUnitario
 
       const data: Partial<VendaItem> = {
-         codVenda: itemPayload.cod_venda,
+         codVenda,
          desProduto: itemPayload.des_produto.trim(),
          valUnitario,
          qtdItens,
@@ -79,7 +81,9 @@ export default class VendaItensController {
 
       const items = await VendaItem.query().where('cod_venda', codVenda)
 
-      return response.ok({ items: items.length })
+      console.log(items)
+
+      return response.ok({ items, length: items.length })
    }
 
    public async storeEndSale({ request, response, auth }: HttpContextContract) {

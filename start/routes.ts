@@ -39,7 +39,7 @@ Route.group(() => {
    Route.post('/create-coupon', 'VendasController.store')
    Route.delete('/destroy-coupon/:saleId', 'VendasController.destroy')
 
-   Route.post('/add-item', 'VendaItensController.store')
+   Route.post('/add-item/:saleId', 'VendaItensController.store')
    Route.get(
       '/sale-item/:customerId/:saleId',
       'VendaItensController.indexSaleItem'
