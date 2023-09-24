@@ -26,8 +26,8 @@ export default class CreateVendaItemValidator {
    public schema = schema.create({
       cod_venda: schema.number(),
       des_produto: schema.string({}, [rules.minLength(1)]),
-      val_unitario: schema.number(),
-      qtd_itens: schema.number(),
+      val_unitario: schema.string(),
+      qtd_itens: schema.string(),
    })
 
    /**

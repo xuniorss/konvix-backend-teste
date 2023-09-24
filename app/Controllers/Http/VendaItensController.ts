@@ -10,12 +10,21 @@ export default class VendaItensController {
    public async store({ request, response, auth }: HttpContextContract) {
       const itemPayload = await request.validate(CreateVendaItemValidator)
 
+      const qtdItens = parseInt(itemPayload.qtd_itens)
+      const valUnitario = parseFloat(itemPayload.val_unitario.replace(',', '.'))
+
       const user = await this.authenticatedUser(auth.user!.codUsuario)
       if (!user) throw new BadRequestException('Usuário não encontrado', 404)
 
-      if (itemPayload.qtd_itens === 0)
+      if (qtdItens === 0)
          throw new BadRequestException(
             'A quantidade de itens não pode ser zero',
+            400
+         )
+
+      if (valUnitario < 0)
+         throw new BadRequestException(
+            'O valor não pode ser menor que zero',
             400
          )
 
@@ -24,13 +33,13 @@ export default class VendaItensController {
       if (!openedSale)
          throw new BadRequestException('Venda não encontrada', 404)
 
-      const valTotalItem = itemPayload.qtd_itens * itemPayload.val_unitario
+      const valTotalItem = qtdItens * valUnitario
 
       const data: Partial<VendaItem> = {
          codVenda: itemPayload.cod_venda,
-         desProduto: itemPayload.des_produto,
-         valUnitario: itemPayload.val_unitario,
-         qtdItens: itemPayload.qtd_itens,
+         desProduto: itemPayload.des_produto.trim(),
+         valUnitario,
+         qtdItens,
          valTotal: valTotalItem,
       }
 
@@ -52,7 +61,28 @@ export default class VendaItensController {
       return response.created({ data, valTotalVenda })
    }
 
-   public async endSale({ request, response, auth }: HttpContextContract) {
+   public async indexSaleItem({
+      request,
+      response,
+      auth,
+   }: HttpContextContract) {
+      const user = this.authenticatedUser(auth.user!.codUsuario)
+      if (!user) throw new BadRequestException('Usuário não encontrado', 404)
+
+      const codCliente = request.param('customerId')
+      const codVenda = request.param('saleId')
+
+      const customer = await Cliente.find(codCliente)
+
+      if (!customer)
+         throw new BadRequestException('Cliente não encontrado', 404)
+
+      const items = await VendaItem.query().where('cod_venda', codVenda)
+
+      return response.ok({ items: items.length })
+   }
+
+   public async storeEndSale({ request, response, auth }: HttpContextContract) {
       const user = this.authenticatedUser(auth.user!.codUsuario)
       if (!user) throw new BadRequestException('Usuário não encontrado', 404)
 
