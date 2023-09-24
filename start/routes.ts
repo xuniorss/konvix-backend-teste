@@ -34,4 +34,7 @@ Route.group(() => {
    Route.get('/customers', 'ClientesController.index')
    Route.put('/customer/:id', 'ClientesController.update')
    Route.delete('/customer/:id', 'ClientesController.destroy')
+
+   Route.post('/create-coupon', 'VendasController.store')
+   Route.delete('/destroy-coupon/:saleId', 'VendasController.destroy')
 }).middleware('auth')

@@ -10,7 +10,7 @@ export default class Venda extends BaseModel {
    @column({ columnName: 'cod_cliente' })
    public codCliente: number
 
-   @column.dateTime({ columnName: 'dta_venda' })
+   @column.date({ columnName: 'dta_venda' })
    public dtaVenda: DateTime
 
    @column({ columnName: 'val_total_venda' })
