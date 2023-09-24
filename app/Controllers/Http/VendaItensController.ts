@@ -81,8 +81,6 @@ export default class VendaItensController {
 
       const items = await VendaItem.query().where('cod_venda', codVenda)
 
-      console.log(items)
-
       return response.ok({ items, length: items.length })
    }
 

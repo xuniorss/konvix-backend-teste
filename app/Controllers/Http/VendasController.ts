@@ -3,6 +3,7 @@ import BadRequestException from 'App/Exceptions/BadRequestException'
 import Cliente from 'App/Models/Cliente'
 import Usuario from 'App/Models/Usuario'
 import Venda from 'App/Models/Venda'
+import VendaItem from 'App/Models/VendaItem'
 import CreateCouponValidator from 'App/Validators/CreateCouponValidator'
 
 export default class VendasController {
@@ -36,7 +37,10 @@ export default class VendasController {
 
       if (!sale) throw new BadRequestException('Venda não encontrada', 404)
 
-      await sale.delete()
+      await Promise.all([
+         VendaItem.query().where('cod_venda', codVenda).delete(),
+         sale.delete(),
+      ])
 
       return response.ok({})
    }
