@@ -8,12 +8,17 @@ import UpdateCustomerValidator from 'App/Validators/UpdateCustomerValidator'
 import { DateTime } from 'luxon'
 
 export default class ClientesController {
+   private authenticatedUser(userId: number) {
+      return Usuario.query()
+         .where('cod_usuario', userId)
+         .andWhere('flg_inativo', '<>', 1)
+         .firstOrFail()
+   }
+
    public async store({ request, response, auth }: HttpContextContract) {
       const customerPayload = await request.validate(CreateCustomerValidator)
 
-      const user = this.authenticatedUser(auth.user!.codUsuario)
-
-      if (!user) throw new BadRequestException('Usuário não encontrado', 404)
+      this.authenticatedUser(auth.user!.codUsuario)
 
       const existingCustomer = await Cliente.query()
          .where('des_telefone', customerPayload.des_telefone)
@@ -28,9 +33,7 @@ export default class ClientesController {
       await Cliente.create({
          desNome: customerPayload.des_nome,
          desEndereco: customerPayload.des_endereco,
-         numEndereco: customerPayload.num_endereco
-            ? customerPayload.num_endereco
-            : 'S/N',
+         numEndereco: customerPayload.num_endereco || 'S/N',
          desCidade: customerPayload.des_cidade,
          desUf: customerPayload.des_uf,
          desTelefone: customerPayload.des_telefone,
@@ -42,8 +45,7 @@ export default class ClientesController {
    }
 
    public async index({ request, response, auth }: HttpContextContract) {
-      const user = this.authenticatedUser(auth.user!.codUsuario)
-      if (!user) throw new BadRequestException('Usuário não encontrado', 404)
+      this.authenticatedUser(auth.user!.codUsuario)
 
       const page = request.input('page', 1)
       const perPage = 10
@@ -56,8 +58,7 @@ export default class ClientesController {
    }
 
    public async indexAll({ response, auth }: HttpContextContract) {
-      const user = this.authenticatedUser(auth.user!.codUsuario)
-      if (!user) throw new BadRequestException('Usuário não encontrado', 404)
+      this.authenticatedUser(auth.user!.codUsuario)
 
       const customers = await Cliente.query().orderBy('des_nome', 'asc')
 
@@ -65,8 +66,7 @@ export default class ClientesController {
    }
 
    public async update({ request, response, auth }: HttpContextContract) {
-      const user = this.authenticatedUser(auth.user!.codUsuario)
-      if (!user) throw new BadRequestException('Usuário não encontrado', 404)
+      this.authenticatedUser(auth.user!.codUsuario)
 
       const customerPayload = await request.validate(UpdateCustomerValidator)
       const codCliente = request.param('id')
@@ -80,7 +80,7 @@ export default class ClientesController {
          desNome: customerPayload.des_nome,
          flgInativo: customerPayload.flg_inativo ? 1 : 0,
          desEndereco: customerPayload.des_endereco,
-         numEndereco: customerPayload.num_endereco,
+         numEndereco: customerPayload.num_endereco || 'S/N',
          desCidade: customerPayload.des_cidade,
          desUf: customerPayload.des_uf,
          desTelefone: customerPayload.des_telefone,
@@ -93,8 +93,7 @@ export default class ClientesController {
    }
 
    public async destroy({ request, response, auth }: HttpContextContract) {
-      const user = this.authenticatedUser(auth.user!.codUsuario)
-      if (!user) throw new BadRequestException('Usuário não encontrado', 404)
+      this.authenticatedUser(auth.user!.codUsuario)
 
       const codCliente = request.param('id')
 
@@ -109,8 +108,7 @@ export default class ClientesController {
    }
 
    public async saleByCustomerIndex({ response, auth }: HttpContextContract) {
-      const user = this.authenticatedUser(auth.user!.codUsuario)
-      if (!user) throw new BadRequestException('Usuário não encontrado', 404)
+      this.authenticatedUser(auth.user!.codUsuario)
 
       const sales: Partial<Cliente[]> = await Database.rawQuery(`
          select distinct
@@ -123,11 +121,5 @@ export default class ClientesController {
       `)
 
       return response.ok(sales)
-   }
-
-   private authenticatedUser(userId: number) {
-      return Usuario.query()
-         .where('cod_usuario', userId)
-         .andWhere('flg_inativo', '<>', 1)
    }
 }
