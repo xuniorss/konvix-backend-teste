@@ -52,4 +52,8 @@ Route.group(() => {
 
    Route.get('/report-sale/customers', 'ClientesController.saleByCustomerIndex')
    Route.get('/report-sale', 'VendaItensController.salesReportByDateIndex')
+   Route.get(
+      '/report-sale/:saleId',
+      'VendaItensController.salesReportBySaleIdIndex'
+   )
 }).middleware('auth')

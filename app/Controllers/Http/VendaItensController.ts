@@ -158,6 +158,9 @@ export default class VendaItensController {
       if (dta_fim < dta_inicio || dta_inicio > dta_fim)
          throw new BadRequestException('Parâmetro inválido', 400)
 
+      const page = request.input('page', 1)
+      const perPage = 10
+
       const sales = await Database.from('venda')
          .leftJoin('cliente', 'cliente.cod_cliente', 'venda.cod_cliente')
          .whereBetween('venda.dta_venda', [dta_inicio, dta_fim])
@@ -173,8 +176,33 @@ export default class VendaItensController {
             'cliente.des_telefone'
          )
          .distinct()
+         .paginate(page, perPage)
 
       return response.ok(sales)
+   }
+
+   public async salesReportBySaleIdIndex({
+      request,
+      response,
+      auth,
+   }: HttpContextContract) {
+      const user = this.authenticatedUser(auth.user!.codUsuario)
+      if (!user) throw new BadRequestException('Usuário não encontrado', 404)
+
+      const codVenda = request.param('saleId')
+
+      const items = await VendaItem.query()
+         .select(
+            'cod_item',
+            'des_produto',
+            'val_unitario',
+            'qtd_itens',
+            'val_total'
+         )
+         .distinct()
+         .where('cod_venda', codVenda)
+
+      return response.ok(items)
    }
 
    private authenticatedUser(userId: number) {
