@@ -48,7 +48,7 @@ DB_CONNECTION=sqlite
 DB_PATH=database/db-teste.db
 ```
 
-### 🏃‍♂️ Iniciando o projeto
+### 🏃‍♂️ Iniciando o projeto (em desenvolvimento)
 
 ```shell
 npm run dev
@@ -56,6 +56,22 @@ npm run dev
 yarn dev
 # ou
 pnpm dev
+```
+
+### 🏃‍♂️ Iniciando o projeto (na pasta build)
+
+1. Instale as dependências
+
+```shell
+npm i
+# ou
+yarn
+```
+
+2. Execute o comando
+
+```shell
+node server.js
 ```
 
 ## 🛠️ Algumas libs utilizadas
