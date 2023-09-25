@@ -1,4 +1,5 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import Database from '@ioc:Adonis/Lucid/Database'
 import BadRequestException from 'App/Exceptions/BadRequestException'
 import Cliente from 'App/Models/Cliente'
 import Usuario from 'App/Models/Usuario'
@@ -136,6 +137,44 @@ export default class VendaItensController {
       await item.delete()
 
       return response.ok({})
+   }
+
+   public async salesReportByDateIndex({
+      request,
+      response,
+      auth,
+   }: HttpContextContract) {
+      const { dta_inicio, dta_fim } = request.qs()
+
+      const user = this.authenticatedUser(auth.user!.codUsuario)
+      if (!user) throw new BadRequestException('Usuário não encontrado', 404)
+
+      if (!dta_inicio || !dta_fim)
+         throw new BadRequestException(
+            'As datas de início e fim são obrigatórias',
+            400
+         )
+
+      if (dta_fim < dta_inicio || dta_inicio > dta_fim)
+         throw new BadRequestException('Parâmetro inválido', 400)
+
+      const sales = await Database.from('venda')
+         .leftJoin('cliente', 'cliente.cod_cliente', 'venda.cod_cliente')
+         .whereBetween('venda.dta_venda', [dta_inicio, dta_fim])
+         .select(
+            'venda.cod_Venda',
+            'venda.cod_cliente',
+            'venda.dta_venda',
+            'venda.val_total_venda',
+            'cliente.cod_cliente',
+            'cliente.des_nome',
+            'cliente.des_cidade',
+            'cliente.des_uf',
+            'cliente.des_telefone'
+         )
+         .distinct()
+
+      return response.ok(sales)
    }
 
    private authenticatedUser(userId: number) {
