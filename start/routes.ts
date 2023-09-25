@@ -49,4 +49,6 @@ Route.group(() => {
       '/destroy-item/:saleId/:itemId',
       'VendaItensController.destroyByItem'
    )
+
+   Route.get('/report-sale/customers', 'ClientesController.saleByCustomerIndex')
 }).middleware('auth')

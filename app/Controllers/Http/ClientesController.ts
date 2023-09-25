@@ -1,4 +1,5 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import Database from '@ioc:Adonis/Lucid/Database'
 import BadRequestException from 'App/Exceptions/BadRequestException'
 import Cliente from 'App/Models/Cliente'
 import Usuario from 'App/Models/Usuario'
@@ -105,6 +106,23 @@ export default class ClientesController {
       await customer.delete()
 
       return response.ok({})
+   }
+
+   public async saleByCustomerIndex({ response, auth }: HttpContextContract) {
+      const user = this.authenticatedUser(auth.user!.codUsuario)
+      if (!user) throw new BadRequestException('Usuário não encontrado', 404)
+
+      const sales: Partial<Cliente[]> = await Database.rawQuery(`
+         select distinct
+            des_nome,
+            val_venda_acumulado,
+            dta_ult_pedido
+         from
+            cliente
+         order by dta_ult_pedido desc
+      `)
+
+      return response.ok(sales)
    }
 
    private authenticatedUser(userId: number) {
